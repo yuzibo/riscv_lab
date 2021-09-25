@@ -1,0 +1,13 @@
+                 |  #risc-v test Part C
+0x000: 0000f337  |   lui t1,0xf
+0x004: 000013b7  |   lui t2,0x1
+0x008: 0063a633  |   slt a2,t2,t1
+0x00c: 00c606b3  |   add a3,a2,a2
+0x010: 00d61733  |   sll a4,a2,a3
+0x014: 00c71733  |   sll a4,a4,a2
+0x018: 00e357b3  |   slr a5,t1,a4
+0x01c: 0067a023  |   sw t1,0(a5)
+0x020: fe77ae23  |   sw t2,-4(a5)
+0x024: ffc7a803  |   lw a6,-4(a5)
+0x028: 00000000
+
