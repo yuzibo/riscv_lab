@@ -432,6 +432,11 @@ static byte_t sim_step()
 	}
 /////////////////////////////////////////////
 	//PART B: get the immediate data of addi/slti/sltiu/xori/ori/andi/slli/srli/srai
+	// for addi
+	if((icode)==(I_OP)){
+		valc = (instr >> 20);
+	}
+
 
 
 	//PART C: get the immediate data of lw
@@ -520,8 +525,15 @@ static byte_t sim_step()
 		break;
 ////////////////////////////
 	//PART B: supplement the function of addi/slti/sltiu/xori/ori/andi/slli/srli/srai
-
-
+	case I_OP:
+		switch(ifun1){
+			case 0:
+				if(ifun2 == 0) {
+					//vale = aluA+aluB;
+					break;
+				}
+		}
+		break;
 ////////////////////////////
 	case I_R:
 		switch(ifun1){

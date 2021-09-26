@@ -8,13 +8,13 @@ int main(int argc, char *argv[])
   {return sim_main(argc,argv);}
 
 /////////////////////////////
-//PART B: you need add (icode)==(...) in right place. 
+//PART B: you need add (icode)==(...) in right place.
 //PART C: you need add (icode)==(...) in right place.Be careful, in some places you will change more than that.
 
 //if the instruction has ifun1
 long long gen_need_ifun1()
 {
-    return ((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_R) || (icode)==(I_CSR));
+    return ((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_R) || (icode)==(I_CSR) || (icode) == (I_OP));
 }
 //if the instruction has ifun2
 long long gen_need_ifun2()
@@ -26,13 +26,13 @@ long long gen_instr_valid()
 {
     return ((icode)==(I_HALT) || (icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_JAL) ||
 		 (icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) ||
-		(icode)==(I_R) || (icode)==(I_CSR));
+		(icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP));
 }
 //if the instruction has rs1
 long long gen_need_rs1()
 {
     return ((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) ||
-		(icode)==(I_R) || (icode)==(I_CSR));
+		(icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP));
 }
 //if the instruction has rs2
 long long gen_need_rs2()
@@ -49,7 +49,7 @@ long long gen_need_valC()
 long long gen_need_rd()
 {
     return ((icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_JAL) ||
-		 (icode)==(I_JALR) || (icode)==(I_R) || (icode)==(I_CSR));
+		 (icode)==(I_JALR) || (icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP));
 }
 //get the value of rs1 if the instruction has rs1
 long long gen_srcA()
@@ -104,7 +104,7 @@ long long gen_mem_data()
 //get the Stat(like the Y86)
 long long gen_Stat()
 {
-    return (((imem_error) | (dmem_error)) ? (STAT_ADR) : !(instr_valid) ? 
+    return (((imem_error) | (dmem_error)) ? (STAT_ADR) : !(instr_valid) ?
       (STAT_INS) : ((icode) == (I_HALT)) ? (STAT_HLT) : (STAT_AOK));
 }
 //the new pc

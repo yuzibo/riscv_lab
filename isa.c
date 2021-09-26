@@ -105,6 +105,7 @@ instr_t instruction_set[] =
     {"sw", 0x23, 4, 2, 0 },
 ////////////////////////////
     //PART B:add addi/slti/sltiu/xori/ori/andi/slli/srli/srai
+    {"addi", 0x13, 4, 0, 0 },
 
 ////////////////////////////
     {"add", 0x33, 4, 0, 0 },
