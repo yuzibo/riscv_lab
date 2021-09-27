@@ -389,7 +389,9 @@ static byte_t sim_step()
     if(gen_need_ifun2()){
 	ifun2 = (instr >> 25)&0x7f;
     }
-    else ifun2 = 0;
+    else {
+		ifun2 = 0; // original
+    }
 
     instr_valid = gen_instr_valid();
 
@@ -427,14 +429,23 @@ static byte_t sim_step()
 	}
 	if((icode)==(I_JALR)){
 		valc = (instr >> 20)&0xfff;
-		valc = (valc << 20) >> 20;
+		valc = (valc << 20) >> 20; // 先保留符号位
 
 	}
 /////////////////////////////////////////////
 	//PART B: get the immediate data of addi/slti/sltiu/xori/ori/andi/slli/srli/srai
 	// for addi
 	if((icode)==(I_OP)){
-		valc = (instr >> 20);
+
+		if((ifun1 == 1) || (ifun1 == 5)){
+			valc = ((instr >> 20)&0x1f);
+
+		} else {
+
+			valc = (((int)instr >> 20)&0xfff);
+			valc = (valc << 20) >> 20;
+
+		}
 	}
 
 
@@ -527,11 +538,53 @@ static byte_t sim_step()
 	//PART B: supplement the function of addi/slti/sltiu/xori/ori/andi/slli/srli/srai
 	case I_OP:
 		switch(ifun1){
-			case 0:
+			case 0: // addi
 				if(ifun2 == 0) {
-					//vale = aluA+aluB;
+					vale = aluA;
 					break;
 				}
+			case 1: // slli, it is wrong!
+				if(ifun2 == 1)
+					vale = (aluA << (valc&0x3f));
+				break;
+
+			case 2: //slti
+				if(aluA < valc){
+					vale = 1;
+					break;
+				} else {
+					vale = 0;
+					break;
+				}
+			case 3: //sltui
+				if(aluA < valc) {
+					vale = 1;
+					break;
+				} else {
+					vale = 0;
+					break;
+				}
+			case 4: // xori
+				vale = aluA ^ valc;
+				break;
+			case 5: // srli and srai
+				if (ifun2 == 0x20){
+					//valc = 0x4;
+					valc = 0x4;
+					break;
+				} else {
+					valc = (aluA << valc);
+					break;
+
+				}
+				break;
+
+			case 6: // ori
+				vale = aluA | valc;
+				break;
+			case 7: // andi
+				vale = aluA & valc;
+				break;
 		}
 		break;
 ////////////////////////////

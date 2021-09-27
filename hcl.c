@@ -19,7 +19,7 @@ long long gen_need_ifun1()
 //if the instruction has ifun2
 long long gen_need_ifun2()
 {
-    return ((icode)==(I_R));
+    return ((icode)==(I_R) || ((icode) == (I_OP) && ((ifun1 == 5)||(ifun1 == 1))));
 }
 //if the instruction is valid
 long long gen_instr_valid()
@@ -43,7 +43,7 @@ long long gen_need_rs2()
 long long gen_need_valC()
 {
     return ((icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_JAL) ||
-		 (icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S));
+		 (icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_OP));
 }
 //if the instruction has rd
 long long gen_need_rd()
