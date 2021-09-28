@@ -438,7 +438,7 @@ static byte_t sim_step()
 	if((icode)==(I_OP)){
 
 		if((ifun1 == 1) || (ifun1 == 5)){
-			valc = ((instr >> 20)&0x1f);
+			valc = ((instr >> 20)&0x3f);
 
 		} else {
 
@@ -470,6 +470,8 @@ static byte_t sim_step()
 //each instructions is 4 byte
     valp+=4;
 //output related information
+// 以上就是译码部分
+
     sim_log("IF: Fetched %s at 0x%x.  rs1=%s, rs2=%s, rd=%s, Imm = 0x%x\n",
 	    iname(icode,ifun1,ifun2), pc, reg_name(rs1), reg_name(rs2), reg_name(rd), valc);
 //we already have icode,ifun1,ifun2,rs1,rs2,rd,imm
@@ -539,16 +541,15 @@ static byte_t sim_step()
 	case I_OP:
 		switch(ifun1){
 			case 0: // addi
-				if(ifun2 == 0) {
-					vale = aluA;
+					vale = valc + aluA;
 					break;
-				}
-			case 1: // slli, it is wrong!
-				if(ifun2 == 1)
+
+			case 1: // slli, it is wrong!  notes:
 					vale = (aluA << (valc&0x3f));
+                    //  rd = rs1 << shamt
 				break;
 
-			case 2: //slti
+			case 2: //slti It is wrong
 				if(aluA < valc){
 					vale = 1;
 					break;
@@ -556,8 +557,8 @@ static byte_t sim_step()
 					vale = 0;
 					break;
 				}
-			case 3: //sltui
-				if(aluA < valc) {
+			case 3: //sltiu
+				if(aluA > valc) {
 					vale = 1;
 					break;
 				} else {
@@ -570,10 +571,10 @@ static byte_t sim_step()
 			case 5: // srli and srai
 				if (ifun2 == 0x20){
 					//valc = 0x4;
-					valc = 0x4;
+					vale = (aluA >> valc);
 					break;
 				} else {
-					valc = (aluA << valc);
+					vale = ((unsigned int)aluA >> valc);
 					break;
 
 				}
@@ -642,6 +643,8 @@ static byte_t sim_step()
 		vale = aluA+aluB;
 		break;
     }
+//   alu 单元的运算
+
 
 //get the address of memory and the data which will be written into memory
     mem_addr = gen_mem_addr();

@@ -461,6 +461,7 @@ bool_t diff_reg(mem_t oldr, mem_t newr, FILE *outfile)
     if (newr->len < len)
 	len = newr->len;
     for (pos = 0; (!diff || outfile) && pos < len; pos += 4) {
+
         word_t ov = 0;
         word_t nv = 0;
 	get_halfword_val(oldr, pos, &ov);
