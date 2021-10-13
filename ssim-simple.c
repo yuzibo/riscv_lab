@@ -331,12 +331,18 @@ static void update_state()
     /* Writeback */
     //writeback vale to destE
     //REG_X0 can not change
+    // vale 是经过alu计算出来的存入到dstE
     if (destE != REG_NONE && destE != REG_X0 ){
 	set_reg_val(reg, destE, vale);
 
     }
 ////////////////////////////////////
     //PART C: writeback valm to destM
+    // 从内存取出来的值放入 dstM
+    if (destM != REG_NONE && destM != REG_X0) {
+    set_reg_val(reg, destM, valm);
+
+    }
 
 ////////////////////////////////////
     if (mem_write) {
@@ -436,21 +442,19 @@ static byte_t sim_step()
 	//PART B: get the immediate data of addi/slti/sltiu/xori/ori/andi/slli/srli/srai
 	// for addi
 	if((icode)==(I_OP)){
-
 		if((ifun1 == 1) || (ifun1 == 5)){
 			valc = ((instr >> 20)&0x3f);
-
 		} else {
-
 			valc = (((int)instr >> 20)&0xfff);
 			valc = (valc << 20) >> 20;
-
 		}
 	}
-
-
-
 	//PART C: get the immediate data of lw
+    if((icode)==(I_L)){
+        valc = ((instr >> 20)&0xfff);
+        valc = (valc << 20) >> 20;
+        //valc = valc;
+    }
 
 
 /////////////////////////////////////////////
@@ -536,6 +540,14 @@ static byte_t sim_step()
 				break;
 		}
 		break;
+////////////////////// part c
+    case I_L:
+        switch(ifun1){
+            case 2:
+                vale = aluA + valc;
+                break;
+        }
+        break;
 ////////////////////////////
 	//PART B: supplement the function of addi/slti/sltiu/xori/ori/andi/slli/srli/srai
 	case I_OP:

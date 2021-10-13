@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 //if the instruction has ifun1
 long long gen_need_ifun1()
 {
-    return ((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_R) || (icode)==(I_CSR) || (icode) == (I_OP));
+    return ((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_R) || (icode)==(I_CSR) || (icode) == (I_OP) || (icode)==(I_L));
 }
 //if the instruction has ifun2
 long long gen_need_ifun2()
@@ -26,13 +26,13 @@ long long gen_instr_valid()
 {
     return ((icode)==(I_HALT) || (icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_JAL) ||
 		 (icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) ||
-		(icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP));
+		(icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP) || (icode)==(I_L));
 }
 //if the instruction has rs1
 long long gen_need_rs1()
 {
     return ((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) ||
-		(icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP));
+		(icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP) || (icode)==(I_L));
 }
 //if the instruction has rs2
 long long gen_need_rs2()
@@ -43,18 +43,18 @@ long long gen_need_rs2()
 long long gen_need_valC()
 {
     return ((icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_JAL) ||
-		 (icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_OP));
+		 (icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_OP) || (icode)==(I_L));
 }
 //if the instruction has rd
 long long gen_need_rd()
 {
     return ((icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_JAL) ||
-		 (icode)==(I_JALR) || (icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP));
+		 (icode)==(I_JALR) || (icode)==(I_R) || (icode)==(I_CSR) || (icode)==(I_OP) || (icode)==(I_L));
 }
 //get the value of rs1 if the instruction has rs1
 long long gen_srcA()
 {
-    return (((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_OP) || (icode)==(I_R)) ? (rs1) : (REG_NONE));
+    return (((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_L) || (icode)==(I_OP) || (icode)==(I_R)) ? (rs1) : (REG_NONE));
 }
 //get the value of rs2 if the instruction has rs2
 long long gen_srcB()
@@ -64,27 +64,27 @@ long long gen_srcB()
 //write the value calculated by ALU to rd
 long long gen_dstE()
 {
-    return (((icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_JAL) || (icode)==(I_OP) || (icode)==(I_JALR) || (icode)==(I_R)) ? (rd) : (REG_NONE));
+    return (((icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_JAL) || (icode)==(I_OP) || (icode)==(I_L) || (icode)==(I_JALR) || (icode)==(I_R)) ? (rd) : (REG_NONE));
 }
 //write the value in memory to rd
 long long gen_dstM()
 {
-    return (REG_NONE || (icode)==(I_OP));
+    return ( icode == I_L ? rd : REG_NONE);
 }
 //in alu, there are two operands,one is in aluA, another is in aluB
 long long gen_aluA()
 {
-    return (((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_OP) || (icode)==(I_R)) ? (vala) : (((icode)==(I_AUIPC)) ? (pc) : 0));
+    return (((icode)==(I_JALR) || (icode)==(I_B) || (icode)==(I_S) || (icode)==(I_OP) || (icode)==(I_L) || (icode)==(I_R)) ? (vala) : (((icode)==(I_AUIPC)) ? (pc) : 0));
 }
 
 long long gen_aluB()
 {
-    return (((icode)==(I_B) || (icode)==(I_R)) ? (valb) : (((icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_OP) || (icode)==(I_JAL) || (icode)==(I_JALR) || (icode)==(I_S)) ? (valc) : 0));
+    return (((icode)==(I_B) || (icode)==(I_R)) ? (valb) : (((icode)==(I_LUI) || (icode)==(I_AUIPC) || (icode)==(I_L) || (icode)==(I_OP) || (icode)==(I_JAL) || (icode)==(I_JALR) || (icode)==(I_S)) ? (valc) : 0));
 }
 //if the instruction needs to read data from memory
 long long gen_mem_read()
 {
-    return 0;
+    return (icode)==(I_L);
 }
 //if the instruction needs to write data from memory
 long long gen_mem_write()
@@ -94,7 +94,7 @@ long long gen_mem_write()
 //the address of the memory
 long long gen_mem_addr()
 {
-    return (((icode)==(I_S)) ? (vale) : 0);
+    return (((icode)==(I_L) || ((icode)==(I_S))) ? (vale) : 0);
 }
 //the data which will be written into memory
 long long gen_mem_data()

@@ -37,7 +37,7 @@ typedef enum { R_ARG, M_ARG, I_ARG, NO_ARG } arg_t;
 ////////////////////////////////////
 //PART B: add the icode of addi/slti/sltiu/xori/ori/andi/slli/srli/srai
 //PART C: add the icode of lw
-typedef enum { I_HALT=0x0, I_NOP=0x1, I_LUI=0x37, I_AUIPC=0x17, I_JAL=0x6f, I_JALR=0x67, I_B=0x63, I_S=0x23, I_R=0x33, I_CSR=0x73 , I_OP=0x13 } itype_t;
+typedef enum { I_HALT=0x0, I_NOP=0x1, I_LUI=0x37, I_AUIPC=0x17, I_JAL=0x6f, I_JALR=0x67, I_B=0x63, I_S=0x23, I_R=0x33, I_CSR=0x73 , I_OP=0x13 , I_L=0x03 } itype_t;
 ///////////////////////////////////
 
 
